@@ -227,10 +227,29 @@ plastic_regions_grouped <-
   group_by(region) %>% 
   summarize(meanLong=mean(na.omit(long)), 
             meanLat=mean(na.omit(lat)),
-            totalStraw=sum(SUM_Soft_Straw, na.rm=TRUE),
-            totalCig=sum(SUM_Soft_CigaretteButts, na.rm=TRUE),
-            totalBag=sum(SUM_Soft_Bag),
-            totalNet=sum(Fishing_Net)
+            totalHard=sum(SUM_Hard_PlasticBeverageBottle, 
+                          SUM_Hard_OtherPlasticBottle, 
+                          SUM_Hard_BucketOrCrate, 
+                          SUM_Hard_Lighter, 
+                          SUM_OtherHardPlastic, 
+                          SUM_OtherHardPlastic, 
+                          na.rm=TRUE),
+            totalSoft=sum(SUM_PlasticOrFoamPlatesBowlsCup,
+                          SUM_Soft_Bag,
+                          SUM_Soft_WrapperOrLabel,
+                          SUM_Soft_Straw,
+                          SUM_Soft_OtherPlastic,
+                          SUM_Soft_CigaretteButts,
+                          SUM_Soft_StringRingRibbon, 
+                          na.rm=TRUE),
+            totalMarine=sum(Fishing_Net,
+                            SUM_FishingLineLureRope,
+                            Fishing_BuoysAndFloats, 
+                          na.rm=TRUE),
+            totalOther=sum(SUM_HardOrSoft_PlasticBottleCap,
+                           SUM_HardSoft_PersonalCareProduc,
+                           SUM_Foam_OtherPlasticDebris, 
+                          na.rm=TRUE)
   )
 # Get total number of items for each region
 total_items_per_region <- plastic_regions_grouped %>% 
@@ -247,10 +266,10 @@ library(leaflet.minicharts)
 tilesURL <- "http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}"
 # Set colours for pie charts
 # http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/
-colors <- c("#999999", # grey
+colors <- c("#D55E00", # rust
             "#E69F00", # gold
             "#009E73", # green
-            "#D55E00") # rust
+            "#999999") # grey
             
             #"#56B4E9") # light blue
             #"#0072B2") # dk blue
