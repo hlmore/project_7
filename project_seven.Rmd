@@ -2,8 +2,7 @@
 title: "Citizen Science Visualization"
 output: 
   flexdashboard::flex_dashboard:
-    orientation: columns
-    vertical_layout: fill
+    orientation: rows
 ---
 
 ```{r setup, include=FALSE}
@@ -211,6 +210,7 @@ plastic_regions <-
     mid_east,
     n_asia,
     na_west,
+    na_east,
     se_asia,
     w_afr,
     w_pac,
@@ -227,14 +227,14 @@ plastic_regions_grouped <-
   group_by(region) %>% 
   summarize(meanLong=mean(na.omit(long)), 
             meanLat=mean(na.omit(lat)),
-            totalHard=sum(SUM_Hard_PlasticBeverageBottle, 
+            `Total hard`=sum(SUM_Hard_PlasticBeverageBottle, 
                           SUM_Hard_OtherPlasticBottle, 
                           SUM_Hard_BucketOrCrate, 
                           SUM_Hard_Lighter, 
                           SUM_OtherHardPlastic, 
                           SUM_OtherHardPlastic, 
                           na.rm=TRUE),
-            totalSoft=sum(SUM_PlasticOrFoamPlatesBowlsCup,
+            `Total soft`=sum(SUM_PlasticOrFoamPlatesBowlsCup,
                           SUM_Soft_Bag,
                           SUM_Soft_WrapperOrLabel,
                           SUM_Soft_Straw,
@@ -242,11 +242,11 @@ plastic_regions_grouped <-
                           SUM_Soft_CigaretteButts,
                           SUM_Soft_StringRingRibbon, 
                           na.rm=TRUE),
-            totalMarine=sum(Fishing_Net,
+            `Total marine`=sum(Fishing_Net,
                             SUM_FishingLineLureRope,
                             Fishing_BuoysAndFloats, 
                           na.rm=TRUE),
-            totalOther=sum(SUM_HardOrSoft_PlasticBottleCap,
+            `Total other`=sum(SUM_HardOrSoft_PlasticBottleCap,
                            SUM_HardSoft_PersonalCareProduc,
                            SUM_Foam_OtherPlasticDebris, 
                           na.rm=TRUE)
@@ -259,6 +259,17 @@ total_items_per_region <- plastic_regions_grouped %>%
 plastic_regions_grouped <- cbind(plastic_regions_grouped, total_items_per_region)
 
 
+  
+  
+
+```
+
+Row
+-----------------------------------------------------------------------
+
+### Plastic waste around the world
+
+```{r}
 # Plot pie charts on map
 # https://cran.r-project.org/web/packages/leaflet.minicharts/vignettes/introduction.html
 library(leaflet)
@@ -280,7 +291,7 @@ basemap %>%
   addMinicharts(
     plastic_regions_grouped$meanLong, plastic_regions_grouped$meanLat,
     type = "pie",
-    chartdata = plastic_regions_grouped[, colnames(plastic_regions_grouped[4:7])],#c("totalStraw", "totalCig")],
+    chartdata = plastic_regions_grouped[, colnames(plastic_regions_grouped[4:7])],
     colorPalette = colors,
     legend = TRUE,
     showLabels = TRUE,
@@ -297,21 +308,9 @@ basemap %>%
                                 textsize = "15px")
     )
 
-  
-  
-
 ```
 
-Column {data-width=650}
------------------------------------------------------------------------
-
-### Chart A
-
-```{r}
-
-```
-
-Column {data-width=350}
+Row
 -----------------------------------------------------------------------
 
 ### Chart B
@@ -326,3 +325,10 @@ Column {data-width=350}
 
 ```
 
+Row {data-height=100}
+-----------------------------------------------------------------------
+
+### References
+```{r}
+print(c("Dataset: https://cscloud-ec2020.opendata.arcgis.com/datasets/98631dc5bb9a4ea5a8f9c0b4ec433290_0?geometry=56.226%2C-46.748%2C-110.766%2C57.178"))
+```
